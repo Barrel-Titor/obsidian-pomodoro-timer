@@ -1,7 +1,34 @@
 <h1 align="center">Pomodoro Timer for Obsidian (Community Fork)</h1>
 
 ![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/f2f4f339-ba66-423f-b6a5-79fe91e13ef0)
-Actively maintained by [@rupel190](https://github.com/rupel190), based on the original by [@eatgrass](https://github.com/eatgrass). Includes new features and fixes not yet merged upstream.
+Actively maintained as a second-level fork from [@rupel190](https://github.com/rupel190)'s community fork, originally based on [@eatgrass](https://github.com/eatgrass). This fork focuses on bug fixes and features needed for day-to-day use.
+
+中文文档: [README-zh.md](README-zh.md)
+
+## Why This Fork?
+
+The original plugin by @eatgrass is no longer actively maintained. After community maintenance by @rupel190, this repository was forked again to continue fixing bugs and adding practical features needed in personal workflows. Contributions welcome!
+
+## What's New in This Fork?
+
+- Currently nothing
+
+### TBD
+
+- [ ] feature: Support for multi-tasks
+- [ ] fix: UI for long file names
+- [ ] fix: Implement Heading-aware Logging
+
+![heading-aware](assets/heading-aware.png)
+
+## What's New in [@rupel190](https://github.com/rupel190)'s Fork?
+
+- **Session comments in logs**: Add a short comment to each Pomodoro and keep it in your log output for later review.  
+- **Quick Start Selected Task command**: Bind it to a hotkey to pick the task under cursor, pin it, and start timing immediately.  
+- **Task panel upgrade**: The timer sidebar now separates current task and file task list, with filtering and search for faster task switching.  
+- **Log under a heading (Not implemented yet)**: When your task file has headings, you can choose where logs are appended.  
+- **Fork identity clarified**: This is an independently maintained fork with its own plugin identity (`pomodoro-timer-ex`).  
+- **Under-the-hood improvements**: Internal architecture and UI code were reorganized to support more stable maintenance and future updates.  
 
 ## Introduction
 
@@ -9,13 +36,21 @@ A modern Pomodoro timer plugin for Obsidian, now with comment logging and more f
 
 ## Features
 
+### [@eatgrass](https://github.com/eatgrass) version
+
 - **Customizable Timer**: Adjust work/break durations to match your workflow.
 - **System + Custom Audio Alerts**: Notification options for every environment.
 - **Status Bar Display**: Monitor your progress directly from Obsidian's status bar to save screen space.
 - **Daily Note Integration**: Log to your daily note or custom templates.
 - **Verbose Metadata Output**: Includes `begin::`, `duration::`, `comment::` and more.
 - **Task Tracking (🍅)**: Auto-increment actual pomodoro count in task metadata.
+
+### [@rupel190](https://github.com/rupel190) version
+
 - **Quick Start Command**: use the Quick Start Select Task command, which is bindable to a hot key, to select the task, pin it, and start the timer. Any timer that was already running for another task is logged.
+- **Session Comment Input**: Add a short note for each Pomodoro and keep it in your logs.
+- **Task + File Panels**: View your current task and file task list side by side, with filtering and search.
+- **Heading-aware Logging (Not implemented yet)**: Choose a heading in your task file as the log destination when available.
 
 ---
 
@@ -219,11 +254,3 @@ To switch sessions, simply click on the `Work/Break` label displayed on the time
 2. How to completely disable `Break` sessions
 
 You can adjust the break interval setting to `0`, this will turn off `Break` sessions.
-
-## Why This Fork?
-
-The original plugin by @eatgrass is no longer actively maintained. This fork builds upon their great work, fixes known issues, and adds requested features. Contributions welcome!
-
----
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I013760H)
