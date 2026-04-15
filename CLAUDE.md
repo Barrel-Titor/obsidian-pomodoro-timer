@@ -68,6 +68,9 @@
   - 改 `manifest.json` / `versions.json` / `version-bump.mjs`（版本发布）：先跑 `npm run version`，再检查两个元文件变更是否符合预期。
 
 ## Working Agreements
+- 不要直接在 `main` 分支上修改或提交代码；开始开发前先切到工作分支或在 worktree 中工作。
+- 功能开发分支命名使用 `feat/xxx`。
+- Bug 修复分支命名使用 `fix/xxx`。
 - 包管理器使用 `npm`，避免混用 `pnpm`/`yarn`。
 - 不要提交 `.gitignore` 已排除的构建与环境产物（如 `main.js`、`*.map`、`node_modules`、`data.json`）。
 - 非必要不要跨 `components + svelte + serializers` 做大重构；这三块耦合度高。
