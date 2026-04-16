@@ -71,6 +71,7 @@
 - 不要直接在 `main` 分支上修改或提交代码；开始开发前先切到工作分支或在 worktree 中工作。
 - 功能开发分支命名使用 `feat/xxx`。
 - Bug 修复分支命名使用 `fix/xxx`。
+- 本地把开发分支合入 `main` 时，按合并 MR 的方式整理提交：先在开发分支执行交互式变基（`git rebase -i`）并 Squash 多个 commit，再切回 `main` 使用 `git merge --no-ff <branch>` 合并，保留合并分支记录。
 - 包管理器使用 `npm`，避免混用 `pnpm`/`yarn`。
 - 不要提交 `.gitignore` 已排除的构建与环境产物（如 `main.js`、`*.map`、`node_modules`、`data.json`）。
 - 非必要不要跨 `components + svelte + serializers` 做大重构；这三块耦合度高。

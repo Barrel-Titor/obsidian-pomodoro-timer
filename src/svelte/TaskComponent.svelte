@@ -2,6 +2,7 @@
 import type TaskTracker from '@components/TaskTracker'
 import Tasks, { type TaskItem } from '@components/Tasks'
 import { extractProgressText } from '@utils/utils'
+import TaskItemComponent from '@svelte/TaskItemComponent.svelte'
 
 export let tasks: Tasks
 export let tracker: TaskTracker
@@ -11,6 +12,9 @@ const r = (content: string, el: HTMLElement) => {
 }
 
 let selectedHeading = ''
+let isCommentExpanded = false
+// TODO: Re-enable heading selector when "log under heading" flow is implemented.
+const SHOW_HEADING_SELECTOR = false
 
 $: if (selectedHeading !== '') {
     tracker.setFileHeading(selectedHeading)
@@ -33,6 +37,10 @@ const removeSingleTask = (task: TaskItem) => {
 const changeComment = (e: Event) => {
     let target = e.target as HTMLInputElement
     tracker.setComment(target.value)
+}
+
+const toggleComment = () => {
+    isCommentExpanded = !isCommentExpanded
 }
 
 // const openFile = (e: MouseEvent) => {
@@ -59,14 +67,11 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
                     Tasks ({$tracker.tasks.length})
                 </span>
             </div>
-            <div class="pomodoro-tasks-right">
-                <span class="pomodoro-tasks-file-name" on:click={openTask}>
-                    {$tracker.task?.fileName}
-                </span>
-            </div>
         </div>
 
-        {#if $tracker?.availableFileHeadings && $tracker?.availableFileHeadings.length > 0}
+        {#if SHOW_HEADING_SELECTOR &&
+            $tracker?.availableFileHeadings &&
+            $tracker?.availableFileHeadings.length > 0}
             <div class="pomodoro-heading-selector">
                 <label for="heading-select">Log under heading:</label>
                 <select id="heading-select" bind:value={selectedHeading}>
@@ -84,10 +89,12 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
             {#each $tracker.tasks as selectedTask, index}
                 <div class="pomodoro-tasks-item">
                     <div class="pomodoro-tasks-name-row">
-                        <span class="pomodoro-task-label">
-                            <span on:click={(e) => openTask(e, selectedTask)}>
-                                {selectedTask.name}
-                            </span>
+                        <span
+                            class="pomodoro-task-label"
+                            on:click={(e) => openTask(e, selectedTask)}>
+                            <TaskItemComponent
+                                render={r}
+                                content={selectedTask.name} />
                         </span>
                         {#if index === 0}
                             <span class="pomodoro-task-primary">Primary</span>
@@ -117,14 +124,19 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
             {/each}
         </div>
 
-        <input
-            class="pomodoro-comment-input"
-            type="text"
-            placeholder="Session comment..."
-            value={$tracker.comment}
-            on:input={changeComment} />
+        {#if isCommentExpanded}
+            <input
+                class="pomodoro-comment-input"
+                type="text"
+                placeholder="Session comment..."
+                value={$tracker.comment}
+                on:input={changeComment} />
+        {/if}
 
         <div class="pomodoro-tasks-toolbar">
+            <span class="pomodoro-tasks-comment-toggle" on:click={toggleComment}>
+                {isCommentExpanded ? '-' : '+'}
+            </span>
             <span class="pomodoro-tasks-clear-all" on:click={removeTask}>
                 Clear all
             </span>
@@ -134,7 +146,7 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
 
 <style>
 .pomodoro-comment-input {
-    margin: 1rem 2rem 1rem 0rem;
+    margin: 0.5rem 0;
     width: 100%;
     font-size: 0.85rem;
     padding: 0.3rem 0.5rem;
@@ -147,7 +159,10 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
     cursor: pointer;
 }
 
-.pomodoro-task-label span {
+.pomodoro-task-label {
+    flex: 1;
+    min-width: 0;
+    display: flex;
     cursor: pointer;
 }
 
@@ -180,13 +195,37 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
 }
 
 .pomodoro-tasks-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-top: 1px solid var(--background-modifier-border);
-    padding: 0.5rem 0;
+    padding: 0.5rem 1rem;
+    gap: 0.75rem;
+}
+
+.pomodoro-tasks-comment-toggle,
+.pomodoro-tasks-clear-all {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+}
+
+.pomodoro-tasks-comment-toggle {
+    font-size: 1rem;
+    padding-right: 0.35rem;
 }
 
 .pomodoro-tasks-clear-all {
     font-size: 0.8rem;
-    color: var(--text-muted);
-    cursor: pointer;
+    margin-left: auto;
+}
+
+.pomodoro-tasks-comment-toggle:hover,
+.pomodoro-tasks-clear-all:hover {
+    color: var(--text-normal);
 }
 </style>
