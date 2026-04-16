@@ -35,7 +35,18 @@ $: filtered = $tasks
 
 // TODO: Low prio: Trigger when Task is not pinned and is selected in the editor (versus the task usually only being changeable from the list). I.e. "Allow task switching per editor selection". Probably sucks to implement tho.
 const activeTask = (task: TaskItem) => {
-    tracker.active(task)
+    tracker.toggleTask(task)
+}
+
+const isSelected = (task: TaskItem) => {
+    return (
+        $tracker.tasks?.some((selected) => {
+            if (task.blockLink && selected.blockLink) {
+                return task.blockLink === selected.blockLink
+            }
+            return task.path === selected.path && task.line === selected.line
+        }) ?? false
+    )
 }
 
 const togglePinned = () => {
@@ -162,6 +173,8 @@ const showTaskMenu = (task: TaskItem) => (e: MouseEvent) => {
                         )}%, transparent 0%)"
                         class="pomodoro-tasks-item {item.checked
                             ? 'pomodoro-tasks-checked'
+                            : ''} {isSelected(item)
+                            ? 'pomodoro-tasks-selected'
                             : ''}">
                         <div class="pomodoro-tasks-name-row">
                             {#if item.checked}
@@ -254,6 +267,10 @@ const showTaskMenu = (task: TaskItem) => (e: MouseEvent) => {
 
 .pomodoro-tasks-item + .pomodoro-tasks-item {
     border-top: 1px solid var(--background-modifier-border);
+}
+
+.pomodoro-tasks-selected {
+    box-shadow: inset 2px 0 0 var(--interactive-accent);
 }
 
 .pomodoro-tasks-checked .pomodoro-tasks-name-row {

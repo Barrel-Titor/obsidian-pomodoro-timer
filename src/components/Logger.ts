@@ -11,6 +11,7 @@ export type TimerLog = {
 	mode: Mode
 	session: number
 	task: TaskLog
+	tasks: TaskLog[]
 	comment: string
 	finished: boolean
 }
@@ -38,7 +39,11 @@ export type TaskLog = Pick<
 	| 'tags'
 >
 
-export type LogContext = TimerState & { task: TaskItem, comment?: string }
+export type LogContext = TimerState & {
+	task: TaskItem
+	tasks: TaskItem[]
+	comment?: string
+}
 
 export default class Logger {
 	private plugin: PomodoroTimerPlugin
@@ -124,6 +129,7 @@ export default class Logger {
 			end: new Date().getTime(),
 			session: ctx.duration,
 			task: ctx.task,
+			tasks: ctx.tasks,
 			comment: ctx.comment ?? '',
 			finished: ctx.count == ctx.elapsed,
 		}

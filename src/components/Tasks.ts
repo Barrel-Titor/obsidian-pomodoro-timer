@@ -98,18 +98,8 @@ export default class Tasks implements Readable<TaskStore> {
 							return state
 						})
 
-						// sync active task
-						if (this.plugin.tracker?.task?.blockLink) {
-							let task = tasks.find(
-								(item) =>
-									item.blockLink &&
-									item.blockLink ===
-									this.plugin.tracker?.task?.blockLink,
-							)
-							if (task) {
-								this.plugin.tracker.sync(task)
-							}
-						}
+						// sync selected tasks
+						this.plugin.tracker?.syncSelectedTasks(tasks)
 					}
 				},
 			),

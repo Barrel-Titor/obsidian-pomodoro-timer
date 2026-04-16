@@ -173,13 +173,22 @@ export default class Timer implements Readable<TimerStore> {
 		let task = this.plugin.tracker?.task
 			? { ...this.plugin.tracker.task }
 			: { ...DEFAULT_TASK }
+		let tasks = this.plugin.tracker?.tasks?.length
+			? this.plugin.tracker.tasks.map((selectedTask) => ({
+				...selectedTask,
+			}))
+			: []
 
 		if (!task.path) {
 			task.path = this.plugin.tracker?.file?.path ?? ''
 			task.fileName = this.plugin.tracker?.file?.name ?? ''
 		}
 
-		return { ...state, task, comment: comment }
+		if (tasks.length === 0 && task.blockLink) {
+			tasks = [{ ...task }]
+		}
+
+		return { ...state, task, tasks, comment: comment }
 	}
 
 	private async processLog(ctx: LogContext) {
