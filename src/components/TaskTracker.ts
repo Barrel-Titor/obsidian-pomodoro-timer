@@ -239,7 +239,14 @@ export default class TaskTracker implements TaskTrackerStore {
 		}
 	}
 
-	public syncSelectedTasks(latestTasks: TaskItem[]) {
+	public syncSelectedTasks(
+		latestTasks: TaskItem[],
+		changedFilePath?: string,
+	) {
+		const previousPrimaryKey = this.state.task
+			? this.toTaskKey(this.state.task)
+			: ''
+		let nextPrimaryKey = previousPrimaryKey
 		this.store.update((state) => {
 			if (state.tasks.length === 0) {
 				return state
@@ -247,21 +254,37 @@ export default class TaskTracker implements TaskTrackerStore {
 
 			const syncedTasks: TaskItem[] = []
 			for (const selected of state.tasks) {
+				const shouldSyncSelectedTask =
+					!changedFilePath || selected.path === changedFilePath
+				if (!shouldSyncSelectedTask) {
+					syncedTasks.push(selected)
+					continue
+				}
+
 				const latest = latestTasks.find((task) =>
 					this.isSameTask(task, selected),
 				)
 				if (latest) {
+					const keepCustomName =
+						selected.name !== '' &&
+						selected.description !== '' &&
+						selected.name !== selected.description
 					syncedTasks.push({
 						...latest,
-						name: selected.name,
+						name: keepCustomName ? selected.name : latest.name,
 					})
 				}
 			}
 
 			state.tasks = syncedTasks
 			this.refreshPrimaryTask(state)
+			nextPrimaryKey = state.task ? this.toTaskKey(state.task) : ''
 			return state
 		})
+
+		if (nextPrimaryKey !== previousPrimaryKey) {
+			void this.syncPrimaryTaskHeadings()
+		}
 	}
 
 	private async ensureBlockId(task: TaskItem) {
