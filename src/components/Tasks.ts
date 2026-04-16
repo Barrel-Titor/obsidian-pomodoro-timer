@@ -98,8 +98,8 @@ export default class Tasks implements Readable<TaskStore> {
 							return state
 						})
 
-						// sync selected tasks
-						this.plugin.tracker?.syncSelectedTasks(tasks)
+						// sync selected tasks for the changed file only
+						this.plugin.tracker?.syncSelectedTasks(tasks, file.path)
 					}
 				},
 			),
