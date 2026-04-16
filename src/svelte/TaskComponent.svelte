@@ -26,6 +26,10 @@ const removeTask = () => {
     tracker.clear()
 }
 
+const removeSingleTask = (task: TaskItem) => {
+    tracker.removeTask(task)
+}
+
 const changeComment = (e: Event) => {
     let target = e.target as HTMLInputElement
     tracker.setComment(target.value)
@@ -35,8 +39,8 @@ const changeComment = (e: Event) => {
 //     tracker.openFile(e)
 // }
 
-const openTask = (e: MouseEvent) => {
-    tracker.openTask(e, tracker.task)
+const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
+    tracker.openTask(e, task)
 }
 </script>
 
@@ -47,11 +51,13 @@ const openTask = (e: MouseEvent) => {
 <!--     {$tracker.task} -->
 <!-- </span> -->
 
-{#if $tracker.task}
+{#if $tracker.tasks && $tracker.tasks.length > 0}
     <div class="pomodoro-tasks-wrapper">
         <div class="pomodoro-tasks-header">
             <div class="pomodoro-tasks-left">
-                <span class="pomodoro-tasks-header-label">Task</span>
+                <span class="pomodoro-tasks-header-label">
+                    Tasks ({$tracker.tasks.length})
+                </span>
             </div>
             <div class="pomodoro-tasks-right">
                 <span class="pomodoro-tasks-file-name" on:click={openTask}>
@@ -75,15 +81,20 @@ const openTask = (e: MouseEvent) => {
         {/if}
 
         <div class="pomodoro-tasks-active">
-            {#if $tracker.task}
+            {#each $tracker.tasks as selectedTask, index}
                 <div class="pomodoro-tasks-item">
                     <div class="pomodoro-tasks-name-row">
                         <span class="pomodoro-task-label">
-                            {$tracker.task?.name}
+                            <span on:click={(e) => openTask(e, selectedTask)}>
+                                {selectedTask.name}
+                            </span>
                         </span>
+                        {#if index === 0}
+                            <span class="pomodoro-task-primary">Primary</span>
+                        {/if}
                         <span
                             class="pomodoro-tasks-remove"
-                            on:click={removeTask}>
+                            on:click={() => removeSingleTask(selectedTask)}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="12"
@@ -99,24 +110,31 @@ const openTask = (e: MouseEvent) => {
                                     d="m6 6 12 12" /></svg>
                         </span>
                     </div>
-                    <input
-                        class="pomodoro-comment-input"
-                        type="text"
-                        placeholder="Session comment..."
-                        value={$tracker.comment}
-                        on:input={changeComment} />
                     <div class="pomodoro-tasks-progress">
-                        {extractProgressText($tracker.task)}
+                        {extractProgressText(selectedTask)}
                     </div>
                 </div>
-            {/if}
+            {/each}
+        </div>
+
+        <input
+            class="pomodoro-comment-input"
+            type="text"
+            placeholder="Session comment..."
+            value={$tracker.comment}
+            on:input={changeComment} />
+
+        <div class="pomodoro-tasks-toolbar">
+            <span class="pomodoro-tasks-clear-all" on:click={removeTask}>
+                Clear all
+            </span>
         </div>
     </div>
 {/if}
 
 <style>
 .pomodoro-comment-input {
-    margin: 1.5rem 2rem 1rem 0rem;
+    margin: 1rem 2rem 1rem 0rem;
     width: 100%;
     font-size: 0.85rem;
     padding: 0.3rem 0.5rem;
@@ -127,6 +145,18 @@ const openTask = (e: MouseEvent) => {
 
 .pomodoro-tasks-remove {
     cursor: pointer;
+}
+
+.pomodoro-task-label span {
+    cursor: pointer;
+}
+
+.pomodoro-task-primary {
+    font-size: 0.7rem;
+    color: var(--text-on-accent-inverted);
+    background: var(--interactive-accent);
+    border-radius: 999px;
+    padding: 0 0.4rem;
 }
 
 .pomodoro-heading-selector {
@@ -147,5 +177,16 @@ const openTask = (e: MouseEvent) => {
     color: var(--text-normal);
     border: 1px solid var(--background-modifier-border);
     font-size: 0.8rem;
+}
+
+.pomodoro-tasks-toolbar {
+    border-top: 1px solid var(--background-modifier-border);
+    padding: 0.5rem 0;
+}
+
+.pomodoro-tasks-clear-all {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
 }
 </style>

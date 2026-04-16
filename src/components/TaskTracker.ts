@@ -12,6 +12,7 @@ import { extractTaskComponents } from '@utils/utils'
 
 export type TaskTrackerState = {
 	task?: TaskItem
+	tasks: TaskItem[]
 	file?: TFile
 	availableFileHeadings?: HeadingCache[]
 	fileHeading?: HeadingCache
@@ -22,6 +23,7 @@ export type TaskTrackerState = {
 type TaskTrackerStore = Readable<TaskTrackerState>
 
 const DEFAULT_TRACKER_STATE: TaskTrackerState = {
+	tasks: [],
 	filePinned: false,
 	comment: ''
 }
@@ -39,7 +41,7 @@ export default class TaskTracker implements TaskTrackerStore {
 
 	constructor(plugin: PomodoroTimerPlugin) {
 		this.plugin = plugin
-		this.state = DEFAULT_TRACKER_STATE
+		this.state = { ...DEFAULT_TRACKER_STATE, tasks: [] }
 		this.store = writable(this.state)
 		this.subscribe = this.store.subscribe
 		this.unsubscribers.push(
@@ -63,6 +65,10 @@ export default class TaskTracker implements TaskTrackerStore {
 	}
 	get task() {
 		return this.state.task
+	}
+
+	get tasks() {
+		return this.state.tasks
 	}
 
 	get file() {
@@ -96,6 +102,9 @@ export default class TaskTracker implements TaskTrackerStore {
 		this.store.update((state) => {
 			if (state.task) {
 				state.task.name = name
+				if (state.tasks.length > 0) {
+					state.tasks[0].name = name
+				}
 			}
 			return state
 		})
@@ -145,15 +154,114 @@ export default class TaskTracker implements TaskTrackerStore {
 	public async active(task: TaskItem) {
 		await this.ensureBlockId(task)
 		this.store.update((state) => {
+			state.tasks = [task]
 			state.task = task
 			return state
 		})
 
-		// Load headings for the task's file
-		let file = this.plugin.app.vault.getAbstractFileByPath(task.path)
+		await this.syncPrimaryTaskHeadings()
+	}
+
+	private toTaskKey(task: TaskItem) {
+		if (task.blockLink) {
+			return task.blockLink
+		}
+		return `${task.path}:${task.line}`
+	}
+
+	private isSameTask(a: TaskItem, b: TaskItem) {
+		return this.toTaskKey(a) === this.toTaskKey(b)
+	}
+
+	private refreshPrimaryTask(state: TaskTrackerState) {
+		state.task = state.tasks[0]
+		if (!state.task) {
+			state.availableFileHeadings = undefined
+			state.fileHeading = undefined
+		}
+	}
+
+	private async syncPrimaryTaskHeadings() {
+		if (!this.state.task) {
+			return
+		}
+		const file = this.plugin.app.vault.getAbstractFileByPath(
+			this.state.task.path,
+		)
 		if (file instanceof TFile) {
 			await this.readFileHeadings(file)
 		}
+	}
+
+	public async toggleTask(task: TaskItem) {
+		const exists = this.state.tasks.some((selected) =>
+			this.isSameTask(selected, task),
+		)
+
+		if (exists) {
+			await this.removeTask(task)
+			return
+		}
+
+		await this.ensureBlockId(task)
+		const previousPrimaryKey = this.state.task
+			? this.toTaskKey(this.state.task)
+			: ''
+		let nextPrimaryKey = previousPrimaryKey
+		this.store.update((state) => {
+			state.tasks = [...state.tasks, task]
+			this.refreshPrimaryTask(state)
+			nextPrimaryKey = state.task ? this.toTaskKey(state.task) : ''
+			return state
+		})
+
+		if (nextPrimaryKey !== previousPrimaryKey) {
+			await this.syncPrimaryTaskHeadings()
+		}
+	}
+
+	public async removeTask(task: TaskItem) {
+		const previousPrimaryKey = this.state.task
+			? this.toTaskKey(this.state.task)
+			: ''
+		let nextPrimaryKey = previousPrimaryKey
+		this.store.update((state) => {
+			state.tasks = state.tasks.filter(
+				(selected) => !this.isSameTask(selected, task),
+			)
+			this.refreshPrimaryTask(state)
+			nextPrimaryKey = state.task ? this.toTaskKey(state.task) : ''
+			return state
+		})
+
+		if (nextPrimaryKey !== previousPrimaryKey) {
+			await this.syncPrimaryTaskHeadings()
+		}
+	}
+
+	public syncSelectedTasks(latestTasks: TaskItem[]) {
+		this.store.update((state) => {
+			if (state.tasks.length === 0) {
+				return state
+			}
+
+			const syncedTasks: TaskItem[] = []
+			for (const selected of state.tasks) {
+				const latest = latestTasks.find((task) =>
+					this.isSameTask(task, selected),
+				)
+				if (latest) {
+					syncedTasks.push({
+						...latest,
+						name: selected.name,
+					})
+				}
+			}
+
+			state.tasks = syncedTasks
+			this.refreshPrimaryTask(state)
+			return state
+		})
 	}
 
 	private async ensureBlockId(task: TaskItem) {
@@ -169,7 +277,10 @@ export default class TaskTracker implements TaskTrackerStore {
 						if (!line.endsWith(task.blockLink)) {
 							// block id mismatch?
 							lines[task.line] += `${task.blockLink}`
-							this.plugin.app.vault.modify(f, lines.join('\n'))
+							await this.plugin.app.vault.modify(
+								f,
+								lines.join('\n'),
+							)
 							return
 						}
 					} else {
@@ -177,7 +288,7 @@ export default class TaskTracker implements TaskTrackerStore {
 						let blockId = this.createBlockId()
 						task.blockLink = blockId
 						lines[task.line] += `${blockId}`
-						this.plugin.app.vault.modify(f, lines.join('\n'))
+						await this.plugin.app.vault.modify(f, lines.join('\n'))
 					}
 				}
 			}
@@ -191,6 +302,7 @@ export default class TaskTracker implements TaskTrackerStore {
 	public clear() {
 		console.log("clearing task tracker")
 		this.store.update((state) => {
+			state.tasks = []
 			state.task = undefined
 			state.availableFileHeadings = undefined
 			state.fileHeading = undefined
@@ -235,18 +347,18 @@ export default class TaskTracker implements TaskTrackerStore {
 	}
 
 	public sync(task: TaskItem) {
-		if (
-			this.state.task?.blockLink &&
-			this.state.task.blockLink === task.blockLink
-		) {
-			this.store.update((state) => {
-				if (state.task) {
-					let name = state.task.name
-					state.task = { ...task, name }
-				}
+		this.store.update((state) => {
+			const idx = state.tasks.findIndex((selected) =>
+				this.isSameTask(selected, task),
+			)
+			if (idx === -1) {
 				return state
-			})
-		}
+			}
+			const name = state.tasks[idx].name
+			state.tasks[idx] = { ...task, name }
+			this.refreshPrimaryTask(state)
+			return state
+		})
 	}
 
 	public async updateActual() {
@@ -267,6 +379,9 @@ export default class TaskTracker implements TaskTrackerStore {
 							state.task.actual += 1
 						} else {
 							state.task.actual = 1
+						}
+						if (state.tasks.length > 0) {
+							state.tasks[0].actual = state.task.actual
 						}
 					}
 					return state
