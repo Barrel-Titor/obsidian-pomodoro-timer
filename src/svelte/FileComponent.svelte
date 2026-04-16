@@ -14,7 +14,7 @@ const r = (content: string, el: HTMLElement) => {
     render(content, el)
 }
 
-let status = ''
+let status = 'todo'
 let query = ''
 
 $: filtered = $tasks
@@ -125,7 +125,7 @@ const showTaskMenu = (task: TaskItem) => (e: MouseEvent) => {
                 <span class="pomodoro-tasks-header-label">File</span>
             </div>
             <div class="pomodoro-tasks-right" on:click={openFile}>
-                <span class="pomodoro-tasks-file-name">
+                <span class="pomodoro-tasks-file-name" title={$tracker.file.name}>
                     {$tracker.file.name}
                 </span>
             </div>
@@ -135,11 +135,6 @@ const showTaskMenu = (task: TaskItem) => (e: MouseEvent) => {
             <div class="pomodoro-tasks-toolbar">
                 <div class="pomodoro-tasks-filters">
                     <span
-                        on:click={() => (status = '')}
-                        class="pomodoro-tasks-filter {status === ''
-                            ? 'filter-active'
-                            : ''}">All</span>
-                    <span
                         on:click={() => (status = 'todo')}
                         class="pomodoro-tasks-filter {status === 'todo'
                             ? 'filter-active'
@@ -148,7 +143,12 @@ const showTaskMenu = (task: TaskItem) => (e: MouseEvent) => {
                         on:click={() => (status = 'completed')}
                         class="pomodoro-tasks-filter {status === 'completed'
                             ? 'filter-active'
-                            : ''}">Completed</span>
+                            : ''}">Done</span>
+                    <span
+                        on:click={() => (status = '')}
+                        class="pomodoro-tasks-filter {status === ''
+                            ? 'filter-active'
+                            : ''}">All</span>
                 </div>
                 <span class="pomodoro-tasks-count">
                     {filtered.length} tasks

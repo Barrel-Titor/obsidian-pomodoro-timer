@@ -16,8 +16,15 @@ The original plugin by @eatgrass is no longer actively maintained. After communi
 ### TBD
 
 - [ ] feature: Support for multi-tasks
-- [ ] fix: UI for long file names
-- [ ] fix: Implement Heading-aware Logging
+  - [x] done: Support selecting primary and secondary tasks; Pomodoro is logged only to the primary task
+  - [ ] TODO: Log Pomodoro sessions to all concurrently active tasks, using a different icon from single-task Pomodoros
+  - [ ] TODO: Show a popup (or UI overlay) when a Pomodoro ends so the user can confirm task logging
+- [x] fix: UI display issues
+  - [x] fix: File name overflow when file names are long or panel width is narrow
+  - [x] fix: Render task markdown in FILE and TASK panels consistently (TASK no longer shows raw markdown)
+- [x] chore: Reorder FILE panel tabs from `All, Todo, Completed` to `Todo, Done, All`
+- [ ] feature: Log Pomodoro sessions to in-progress todo tasks
+- [ ] feature: Log under a specific heading (mentioned by @rupel190 but not implemented)
 
 ![heading-aware](assets/heading-aware.png)
 

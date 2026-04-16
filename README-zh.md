@@ -19,8 +19,10 @@ English: [README.md](README.md)
   - [x] 已开发：支持选择主副任务，番茄钟只记录到主任务下
   - [ ] 待开发：番茄钟记录到所有共同进行的任务下，与单番茄任务用不一样的图标记录
   - [ ] 待开发：番茄钟结束时，弹窗（或 UI 覆盖）请用户确认记录任务
-- [ ] fix: 文件名较长时的 UI 问题
-- [ ] fix: file 可以正常显示双链，而 task 不能的问题
+- [x] fix: UI 显示问题
+  - [x] fix: 文件名较长或面板较窄时，文件名显示到框外
+  - [x] fix: FILE 面板可以渲染任务 markdown，而 TASK 面板展示任务源码，统一为渲染 markdown
+- [x] chore: FILE 面板下 All, Todo, Completed 选项卡顺序调整
 - [ ] feature: 番茄钟记录到进行的待办任务下
 - [ ] feature: 番茄钟记录到指定标题（@rupel190 提及但未实装）
 ![heading-aware](assets/heading-aware.png)
