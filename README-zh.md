@@ -18,13 +18,13 @@ English: [README.md](README.md)
   - [x] FILE 面板可以渲染任务 markdown，而 TASK 面板展示任务源码，统一为渲染 markdown
 - [x] chore: FILE 面板下 All, Todo, Completed 选项卡顺序调整
 - [x] chore: 任务结束时的提醒，点击后不在新 pane 中打开，而是在当前 pane 跳转
+- [x] fix: 番茄钟结束，在任务后追加番茄标记时，会破坏该任务的缩进结构的问题
 
 ###  待开发
 
 - [ ] feature: 番茄钟支持多任务
   - [ ] 番茄钟记录到所有共同进行的任务下，与单番茄任务用不一样的图标记录
   - [ ] 番茄钟结束时，弹窗（或 UI 覆盖）请用户确认记录任务
-- [ ] fix: 番茄钟结束，在任务后追加番茄标记时，会破坏该任务的缩进结构的问题
 - [ ] feature: 番茄钟记录到进行的待办任务下
 - [ ] feature: 番茄钟记录到指定标题（@rupel190 提及但未实装）
 ![heading-aware](assets/heading-aware.png)
