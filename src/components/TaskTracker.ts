@@ -455,7 +455,6 @@ export default class TaskTracker implements TaskTrackerStore {
 						}
 						line = line
 							.replace(/🍅:: *(\d* *\/? *\d* *)/, text)
-							.trim()
 					} else {
 						let detail = DESERIALIZERS[format].deserialize(
 							components.body,

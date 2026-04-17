@@ -18,13 +18,13 @@ The original plugin by @eatgrass is no longer actively maintained. After communi
   - [x] Render task markdown in FILE panel and TASK panel consistently (TASK no longer shows raw task source)
 - [x] chore: Adjust FILE panel tab order (`All`, `Todo`, `Completed`)
 - [x] chore: At session end, clicking the reminder now jumps in the current pane instead of opening a new pane
+- [x] fix: When appending Pomodoro markers after a task on session end, preserve task indentation structure
 
 ### TODO
 
 - [ ] feature: Multi-task Pomodoro support
   - [ ] Log Pomodoro to all concurrently active tasks, using an icon different from single-task Pomodoros
   - [ ] Show a popup (or UI overlay) at Pomodoro end so the user can confirm task logging
-- [ ] fix: When appending Pomodoro markers after a task on session end, preserve task indentation structure
 - [ ] feature: Log Pomodoro to in-progress todo tasks
 - [ ] feature: Log under a specific heading (mentioned by @rupel190 but not implemented)
 
