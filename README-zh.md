@@ -1,6 +1,6 @@
 # Obsidian Pomodoro Timer（社区分叉版）
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/f2f4f339-ba66-423f-b6a5-79fe91e13ef0)
+![pomodoro-head](assets/pomodoro-head.png)
 本仓库是从 [@rupel190](https://github.com/rupel190) 的社区维护分叉再次 fork 出来的版本；最初来源是 [@eatgrass](https://github.com/eatgrass) 的原项目。当前维护重点是修复 bug，并补充日常使用中需要的功能。
 
 English: [README.md](README.md)
@@ -11,18 +11,20 @@ English: [README.md](README.md)
 
 ## 本分叉当前新增了什么？
 
-- 当前暂无
+- [ ] feature: 番茄钟支持多任务
+  - [x] 支持选择主副任务，番茄钟只记录到主任务下
+- [x] UI 
+  - [x] 文件名较长或面板较窄时，文件名显示到框外
+  - [x] FILE 面板可以渲染任务 markdown，而 TASK 面板展示任务源码，统一为渲染 markdown
+- [x] chore: FILE 面板下 All, Todo, Completed 选项卡顺序调整
+- [x] chore: 任务结束时的提醒，点击后不在新 pane 中打开，而是在当前 pane 跳转
 
 ###  待开发
 
 - [ ] feature: 番茄钟支持多任务
-  - [x] 已开发：支持选择主副任务，番茄钟只记录到主任务下
-  - [ ] 待开发：番茄钟记录到所有共同进行的任务下，与单番茄任务用不一样的图标记录
-  - [ ] 待开发：番茄钟结束时，弹窗（或 UI 覆盖）请用户确认记录任务
-- [x] fix: UI 显示问题
-  - [x] fix: 文件名较长或面板较窄时，文件名显示到框外
-  - [x] fix: FILE 面板可以渲染任务 markdown，而 TASK 面板展示任务源码，统一为渲染 markdown
-- [x] chore: FILE 面板下 All, Todo, Completed 选项卡顺序调整
+  - [ ] 番茄钟记录到所有共同进行的任务下，与单番茄任务用不一样的图标记录
+  - [ ] 番茄钟结束时，弹窗（或 UI 覆盖）请用户确认记录任务
+- [ ] fix: 番茄钟结束，在任务后追加番茄标记时，会破坏该任务的缩进结构的问题
 - [ ] feature: 番茄钟记录到进行的待办任务下
 - [ ] feature: 番茄钟记录到指定标题（@rupel190 提及但未实装）
 ![heading-aware](assets/heading-aware.png)
@@ -185,7 +187,7 @@ if (log.mode == "WORK") {
 
 该 DataView 脚本会生成一张表格，展示番茄会话、时长、开始与结束时间。
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/ebcf33ac-291e-4659-ab03-93bfbe1c79d3)
+![pomodoro-log](assets/pomodoro-log.png)
 
 <pre>
 ```dataviewjs
@@ -208,7 +210,7 @@ dv.paragraph(table)
 
 该 DataView 脚本会按日期聚合番茄数据，展示每日番茄数量与总时长。
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/84119bb0-c78e-4716-9a76-ffa72d94a587)
+![pomodoro-summary](assets/pomodoro-summary.png)
 
 <pre>
 ```dataviewjs
