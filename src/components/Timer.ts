@@ -242,7 +242,7 @@ export default class Timer implements Readable<TimerStore> {
 	private notify(state: TimerState, logFile: TFile | void) {
 		const emoji = state.mode == 'WORK' ? '🍅' : '🥤'
 		const text = `${emoji} You have been ${state.mode === 'WORK' ? 'working' : 'breaking'
-			} for ${state.duration} minutes.`
+				} for ${state.duration} minutes.`
 
 		if (this.plugin.getSettings().useSystemNotification) {
 			const Notification = (require('electron') as any).remote
@@ -254,7 +254,7 @@ export default class Timer implements Readable<TimerStore> {
 			})
 			sysNotification.on('click', () => {
 				if (logFile) {
-					this.plugin.app.workspace.getLeaf('split').openFile(logFile)
+					this.openLogFileInCurrentPane(logFile)
 				}
 				sysNotification.close()
 			})
@@ -265,7 +265,7 @@ export default class Timer implements Readable<TimerStore> {
 			span.setText(`${text}`)
 			fragment.addEventListener('click', () => {
 				if (logFile) {
-					this.plugin.app.workspace.getLeaf('split').openFile(logFile)
+					this.openLogFileInCurrentPane(logFile)
 				}
 			})
 			new Notice(fragment)
@@ -274,6 +274,15 @@ export default class Timer implements Readable<TimerStore> {
 		if (this.plugin.getSettings().notificationSound) {
 			this.playAudio()
 		}
+	}
+
+	private openLogFileInCurrentPane(logFile: TFile) {
+		const { workspace } = this.plugin.app
+		const leaf =
+			workspace.activeLeaf ??
+			workspace.getMostRecentLeaf() ??
+			workspace.getLeaf(false)
+		leaf.openFile(logFile)
 	}
 
 	public pause() {

@@ -1,29 +1,31 @@
-<h1 align="center">Pomodoro Timer for Obsidian (Community Fork)</h1>
+# Obsidian Pomodoro Timer (Community Fork)
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/f2f4f339-ba66-423f-b6a5-79fe91e13ef0)
-Actively maintained as a second-level fork from [@rupel190](https://github.com/rupel190)'s community fork, originally based on [@eatgrass](https://github.com/eatgrass). This fork focuses on bug fixes and features needed for day-to-day use.
+![pomodoro-head](assets/pomodoro-head.png)
+This repository is a second-level fork of [@rupel190](https://github.com/rupel190)'s community-maintained fork, originally based on [@eatgrass](https://github.com/eatgrass). The current focus is fixing bugs and adding practical features for daily use.
 
 中文文档: [README-zh.md](README-zh.md)
 
 ## Why This Fork?
 
-The original plugin by @eatgrass is no longer actively maintained. After community maintenance by @rupel190, this repository was forked again to continue fixing bugs and adding practical features needed in personal workflows. Contributions welcome!
+The original plugin by @eatgrass is no longer actively maintained. After community maintenance by @rupel190, this repository was forked again to keep fixing issues and implementing features needed in personal workflows. Contributions are welcome.
 
 ## What's New in This Fork?
 
-- Currently nothing
+- [ ] feature: Multi-task Pomodoro support
+  - [x] Support selecting primary and secondary tasks; Pomodoro is logged only to the primary task
+- [x] UI
+  - [x] Fix filename overflow when file names are long or panel width is narrow
+  - [x] Render task markdown in FILE panel and TASK panel consistently (TASK no longer shows raw task source)
+- [x] chore: Adjust FILE panel tab order (`All`, `Todo`, `Completed`)
+- [x] chore: At session end, clicking the reminder now jumps in the current pane instead of opening a new pane
 
-### TBD
+### TODO
 
-- [ ] feature: Support for multi-tasks
-  - [x] done: Support selecting primary and secondary tasks; Pomodoro is logged only to the primary task
-  - [ ] TODO: Log Pomodoro sessions to all concurrently active tasks, using a different icon from single-task Pomodoros
-  - [ ] TODO: Show a popup (or UI overlay) when a Pomodoro ends so the user can confirm task logging
-- [x] fix: UI display issues
-  - [x] fix: File name overflow when file names are long or panel width is narrow
-  - [x] fix: Render task markdown in FILE and TASK panels consistently (TASK no longer shows raw markdown)
-- [x] chore: Reorder FILE panel tabs from `All, Todo, Completed` to `Todo, Done, All`
-- [ ] feature: Log Pomodoro sessions to in-progress todo tasks
+- [ ] feature: Multi-task Pomodoro support
+  - [ ] Log Pomodoro to all concurrently active tasks, using an icon different from single-task Pomodoros
+  - [ ] Show a popup (or UI overlay) at Pomodoro end so the user can confirm task logging
+- [ ] fix: When appending Pomodoro markers after a task on session end, preserve task indentation structure
+- [ ] feature: Log Pomodoro to in-progress todo tasks
 - [ ] feature: Log under a specific heading (mentioned by @rupel190 but not implemented)
 
 ![heading-aware](assets/heading-aware.png)
@@ -186,7 +188,7 @@ As the name suggests, data written using Templater can be dynamically viewed wit
 
 This DataView script generates a table showing Pomodoro sessions with their durations, start, and end times.
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/ebcf33ac-291e-4659-ab03-93bfbe1c79d3)
+![pomodoro-log](assets/pomodoro-log.png)
 
 <pre>
 ```dataviewjs
@@ -209,7 +211,7 @@ dv.paragraph(table)
 
 This DataView script presents a summary of Pomodoro sessions, categorized by date.
 
-![image](https://github.com/eatgrass/obsidian-pomodoro-timer/assets/2351076/84119bb0-c78e-4716-9a76-ffa72d94a587)
+![pomodoro-summary](assets/pomodoro-summary.png)
 
 <pre>
 ```dataviewjs
