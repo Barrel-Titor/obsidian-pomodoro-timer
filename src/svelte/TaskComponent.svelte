@@ -87,7 +87,10 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
 
         <div class="pomodoro-tasks-active">
             {#each $tracker.tasks as selectedTask, index}
-                <div class="pomodoro-tasks-item">
+                <div
+                    class="pomodoro-tasks-item {index === 0
+                        ? 'pomodoro-tasks-item-primary'
+                        : ''}">
                     <div class="pomodoro-tasks-name-row">
                         <span
                             class="pomodoro-task-label"
@@ -96,9 +99,6 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
                                 render={r}
                                 content={selectedTask.name} />
                         </span>
-                        {#if index === 0}
-                            <span class="pomodoro-task-primary">Primary</span>
-                        {/if}
                         <span
                             class="pomodoro-tasks-remove"
                             on:click={() => removeSingleTask(selectedTask)}>
@@ -166,12 +166,8 @@ const openTask = (e: MouseEvent, task: TaskItem | undefined = tracker.task) => {
     cursor: pointer;
 }
 
-.pomodoro-task-primary {
-    font-size: 0.7rem;
-    color: var(--text-on-accent-inverted);
-    background: var(--interactive-accent);
-    border-radius: 999px;
-    padding: 0 0.4rem;
+.pomodoro-tasks-item-primary {
+    box-shadow: inset 2px 0 0 var(--interactive-accent);
 }
 
 .pomodoro-heading-selector {
